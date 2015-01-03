@@ -1,0 +1,11 @@
+language: java
+before_install:
+  - mkdir -p ~/.gradle/
+  - echo "Configuring gradle properties"
+  - echo "artifactory_user=admin" >> ~/.gradle/gradle.properties
+  - echo "artifactory_password=admin" >> ~/.gradle/gradle.properties
+  - echo "artifactory_contextUrl=http://localhost:8081/artifactory" >> ~/.gradle/gradle.properties
+script:
+  - ./gradlew clean
+  - ./gradlew test
+  - ./gradlew integTest

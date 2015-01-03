@@ -1,0 +1,40 @@
+= Store Documents
+
+== Indices
+Currently these indexes are defined in the store (See `IndexName` enum):
+
+* `main`: This is the main index for storing articles, categories, etc.
+* `account`: This index is used for saving user information, account details, etc.
+
+
+== Types
+=== `main` index types
+==== `article`
+
+Any piece of text which can be selected in the browser and stored as a valuable information.
+Examples could be:
+
+* a stackoverflow answer
+* a github gist
+* a full page
+* selection of a text
+
+`article` could have attachments also, which means users can upload images, files, etc.
+
+Suggested fiels for `article`:
+
+* `url`: url of the article, searchable, analyzed as
+* `title`:
+
+==== `category`
+
+== Mappings
+Mappings are registered as index templates.
+
+Mappings currently stored in a json file: main_template.json in src/main/resources folder.
+
+update mapping:
+[source,bash]
+----
+curl -XPUT localhost:9200/_template/main_template --data @main_template.json
+----

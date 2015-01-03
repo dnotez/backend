@@ -1,0 +1,45 @@
+description "backend server provide rest api for chrome extension and web application"
+
+def esVersion = '1.4.2'
+def luceneVersion = '4.10.2'
+
+buildscript {
+    dependencies {
+        classpath 'io.ratpack:ratpack-gradle:0.9.11'
+    }
+}
+
+if (!JavaVersion.current().java8Compatible) {
+    throw new IllegalStateException("Must be built with Java 8 or higher")
+}
+
+// The “ratpack” plugin applies the “application” plugin, making it easy to create a standalone application.
+// See: http://gradle.org/docs/current/userguide/application_plugin.html
+apply plugin: "io.ratpack.ratpack-java"
+
+mainClassName = 'com.pl.server.BackendServer'
+
+dependencies {
+    testCompile 'junit:junit:4.11'
+    testCompile project(':api-client')
+
+    testCompile "org.elasticsearch:elasticsearch:${esVersion}:tests"
+    testCompile 'com.carrotsearch.randomizedtesting:randomizedtesting-runner:2.1.10'
+    testCompile 'org.hamcrest:hamcrest-all:1.3'
+    testCompile 'org.apache.lucene:lucene-test-framework:4.10.2'
+
+    compile project(':common')
+    compile project(':api-dsl')
+    compile project(':text-extraction')
+    compile project(':content-downloader')
+
+    compile 'com.beust:jcommander:1.35'
+    compile 'commons-beanutils:commons-beanutils:1.9.2'
+    compile "org.elasticsearch:elasticsearch:${esVersion}"
+    compile "org.apache.lucene:lucene-expressions:${luceneVersion}"
+    compile 'org.codehaus.groovy:groovy-all:2.3.9'
+
+    // This is a Guice ratpack app
+    compile ratpack.dependency("guice")
+    compile ratpack.dependency("codahale-metrics")
+}

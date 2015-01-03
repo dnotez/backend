@@ -1,0 +1,177 @@
+//put variables in your home folder/.gradle/gradle.properties
+
+buildscript {
+    def mavenRepo;
+    try {
+        new URL('http://localhost:8081/artifactory').content
+        println("${project.name} Local Artifactory is UP")
+        mavenRepo = 'http://localhost:8081/artifactory/plugins-release'
+    } catch (Exception ignore) {
+        println("${project.name} Local Artifactory is DOWN")
+        mavenRepo = 'http://jcenter.bintray.com'
+    }
+    repositories {
+        maven {
+            url mavenRepo
+            credentials {
+                username = "${artifactory_user}"
+                password = "${artifactory_password}"
+            }
+        }
+    }
+    dependencies {
+        classpath(group: 'org.jfrog.buildinfo', name: 'build-info-extractor-gradle', version: '3.0.1')
+    }
+}
+
+allprojects {
+
+    apply plugin: 'idea'
+    apply plugin: 'com.jfrog.artifactory'
+
+    def mavenRepo;
+    try {
+        new URL("${artifactory_contextUrl}").content
+        println("${project.name} Local Artifactory is UP")
+        mavenRepo = "${artifactory_contextUrl}/libs-snapshot"
+    } catch (Exception ignore) {
+        println("${project.name} Local Artifactory is DOWN")
+        mavenRepo = 'http://jcenter.bintray.com'
+    }
+    artifactory {
+        contextUrl = "${artifactory_contextUrl}"
+        //The base Artifactory URL if not overridden by the publisher/resolver
+        publish {
+            repository {
+                repoKey = 'libs-release-local'
+                username = "${artifactory_user}"
+                password = "${artifactory_password}"
+                maven = true
+            }
+        }
+        resolve {
+            repository {
+                repoKey = 'libs-release'
+                username = "${artifactory_user}"
+                password = "${artifactory_password}"
+                maven = true
+            }
+        }
+    }
+
+    buildscript {
+        repositories {
+            maven {
+                name "mainRepository"
+                credentials {
+                    username "${artifactory_user}"
+                    password "${artifactory_password}"
+                }
+                url mavenRepo
+            }
+        }
+    }
+
+    repositories {
+        maven {
+            name "local"
+            credentials {
+                username "${artifactory_user}"
+                password "${artifactory_password}"
+            }
+            url mavenRepo
+        }
+    }
+
+}
+
+
+idea {
+    project {
+        jdkName = '1.8'
+        languageLevel = '1.8'
+        ipr {
+            withXml { provider ->
+                def node = provider.asNode()
+                //configure git support for the project in idea
+                node.component.find { it.'@name' == 'VcsDirectoryMappings' }?.mapping[0].'@vcs' = 'Git'
+                node.component.find {
+                    it.'@name' == 'ProjectRootManager'
+                }?.output[0].'@url' = 'file:///tmp/pLists'
+            }
+        }
+    }
+}
+
+subprojects {
+    apply plugin: 'java'
+
+    version = '0.0.1'
+    group = 'com.pushlists'
+
+    configurations {
+        integrationTest {
+            extendsFrom testCompile
+        }
+    }
+    configurations.integrationTest {
+        description = 'Integration classpath'
+    }
+    configurations.compile.transitive = true
+
+
+    dependencies {
+
+        testCompile 'junit:junit:4.11'
+        testCompile 'org.mockito:mockito-core:1.10.8'
+    }
+
+    task initProject(description: 'Initialize project') << { task ->
+        new File(task.project.name).mkdirs();
+        if (!task.project.name.equalsIgnoreCase('frontend') && !task.project.name.equalsIgnoreCase('deployment')) {
+            task.project.sourceSets*.java.srcDirs*.each { it.mkdirs() }
+            task.project.sourceSets*.resources.srcDirs*.each { it.mkdirs() }
+        }
+        def bf = new File(task.project.name, 'build.gradle')
+        if (!bf.exists()) {
+            bf.createNewFile()
+        }
+    }
+
+    sourceCompatibility = JavaVersion.VERSION_1_8
+
+    sourceSets {
+        scratchPad {
+            java {
+                srcDir 'src/scratchPad/java'
+            }
+        }
+        integrationTest {
+            java {
+                srcDir 'src/integrationTest/java'
+            }
+            resources {
+                srcDir 'src/integrationTest/resources'
+            }
+            compileClasspath = sourceSets.main.output + configurations.integrationTest
+            runtimeClasspath = output + compileClasspath
+        }
+    }
+
+    idea {
+        module {
+            outputDir = file('build/idea')
+            testSourceDirs += file('src/integrationTest/java')
+            testSourceDirs += file('src/integrationTest/resources')
+            testSourceDirs += file('src/scratchPad/java')
+            testSourceDirs += file('src/scratchPad/resources')
+        }
+
+    }
+
+    task integTest(type: Test, description: 'Run integration tests') {
+        jvmArgs = ['-ea'] //required for ES tests
+        testClassesDir = sourceSets.integrationTest.output.classesDir
+        classpath = sourceSets.integrationTest.runtimeClasspath
+    }
+}

@@ -1,0 +1,13 @@
+{
+  "titles": {
+    "properties": {
+      "DOC_ID": {
+        "type": "string"
+      },
+      "TITLE": {
+        "type": "string",
+        "index_analyzer": "shingle_analyzer"
+      }
+    }
+  }
+}

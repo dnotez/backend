@@ -1,0 +1,34 @@
+{
+  "stackoverflow": [
+    {
+      "title": "Elasticsearch URI based query with AND operator",
+      "body": "<div class=\"post-text\" itemprop=\"text\">\n<p>According to documentation, it should work as you described it. See <a href=\"http://www.elasticsearch.org/guide/reference/query-dsl/query-string-query.html\" rel=\"nofollow\">http://www.elasticsearch.org/guide/reference/query-dsl/query-string-query.html</a></p>\n\n<p>That said, you can also use the following:</p>\n\n<pre><code>http://localhost:9200/_search?q=\"+profiletype:student +username:s*\"\n</code></pre>\n    </div>",
+      "url": "http://stackoverflow.com/a/13717242"
+    },
+    {
+      "title": "Copying local files with curl",
+      "body": "<div class=\"post-text\" itemprop=\"text\">\n<p>You could say:</p>\n\n<pre class=\"lang-sh prettyprint prettyprinted\"><code><span class=\"pln\">curl file</span><span class=\"pun\">:///</span><span class=\"pln\">path</span><span class=\"pun\">/</span><span class=\"pln\">to</span><span class=\"pun\">/</span><span class=\"pln\">source</span><span class=\"pun\">/</span><span class=\"pln\">file </span><span class=\"pun\">-</span><span class=\"pln\">o </span><span class=\"pun\">/</span><span class=\"pln\">path</span><span class=\"pun\">/</span><span class=\"pln\">to</span><span class=\"pun\">/</span><span class=\"pln\">destination</span></code></pre>\n\n<p>This would copy <code>/path/to/source/file</code> to <code>/path/to/destination</code>.</p>\n    </div>",
+      "url": "http://stackoverflow.com/a/21023161"
+    },
+    {
+      "title": "Remove property from JavaScript object",
+      "body": "<div class=\"post-text\" itemprop=\"text\">\n<p>Like this:</p>\n\n<pre class=\"default prettyprint prettyprinted\"><code><span class=\"kwd\">delete</span><span class=\"pln\"> myJSONObject</span><span class=\"pun\">.</span><span class=\"pln\">regex</span><span class=\"pun\">;</span><span class=\"pln\">\n</span><span class=\"com\">// or,</span><span class=\"pln\">\n</span><span class=\"kwd\">delete</span><span class=\"pln\"> myJSONObject</span><span class=\"pun\">[</span><span class=\"str\">'regex'</span><span class=\"pun\">];</span><span class=\"pln\">\n</span><span class=\"com\">// or,</span><span class=\"pln\">\n</span><span class=\"kwd\">var</span><span class=\"pln\"> prop </span><span class=\"pun\">=</span><span class=\"pln\"> </span><span class=\"str\">\"regex\"</span><span class=\"pun\">;</span><span class=\"pln\">\n</span><span class=\"kwd\">delete</span><span class=\"pln\"> myJSONObject</span><span class=\"pun\">[</span><span class=\"pln\">prop</span><span class=\"pun\">];</span></code></pre>\n\n<p>For anyone interested in reading more about it, Stack Overflow user <a href=\"http://stackoverflow.com/users/130652/kangax\">kangax</a> has written an incredibly in-depth blog post about the <code>delete</code> statement on his blog, <em><a href=\"http://perfectionkills.com/understanding-delete/\">Understanding delete</a></em>. It is highly recommended.</p>\n    </div>",
+      "url": "http://stackoverflow.com/a/208106"
+    },
+    {
+      "title": "How do I get cURL to not show the progress bar?",
+      "body": "<div class=\"post-text\" itemprop=\"text\">\n<pre class=\"lang-sh prettyprint prettyprinted\"><code><span class=\"pln\">curl </span><span class=\"pun\">-</span><span class=\"pln\">s http</span><span class=\"pun\">://</span><span class=\"pln\">google</span><span class=\"pun\">.</span><span class=\"pln\">com </span><span class=\"pun\">&gt;</span><span class=\"pln\"> temp</span><span class=\"pun\">.</span><span class=\"pln\">html</span></code></pre>\n\n<p>works for curl version 7.19.5 on Ubuntu 9.10 (no progress bar). But if for some reason that does not work on your platform, you could always redirect stderr to /dev/null:</p>\n\n<pre class=\"lang-sh prettyprint prettyprinted\"><code><span class=\"pln\">curl  http</span><span class=\"pun\">://</span><span class=\"pln\">google</span><span class=\"pun\">.</span><span class=\"pln\">com </span><span class=\"lit\">2</span><span class=\"pun\">&gt;/</span><span class=\"pln\">dev</span><span class=\"pun\">/</span><span class=\"pln\">null </span><span class=\"pun\">&gt;</span><span class=\"pln\"> temp</span><span class=\"pun\">.</span><span class=\"pln\">html</span></code></pre>\n    </div>",
+      "url": "http://stackoverflow.com/a/7373922"
+    },
+    {
+      "title": "URI based Elasticsearch query with “starts with” filter",
+      "body": "<div class=\"post-text\" itemprop=\"text\">\n<p>You can do it like this. Hope that helps you</p>\n\n<pre><code>http://localhost:9200/index/type/_search?q=names:na*\n</code></pre>\n    </div>",
+      "url": "http://stackoverflow.com/a/18375478"
+    },
+    {
+      "title": "term and range filters together in an elasticsearch query",
+      "body": "<div class=\"post-text\" itemprop=\"text\">\n<p>You have got to change the mapping of the index and change the type of the properties to nested.</p>\n\n<p>This case has been explained in the docs:\n<a href=\"http://www.elasticsearch.org/blog/managing-relations-inside-elasticsearch/\" rel=\"nofollow\">http://www.elasticsearch.org/blog/managing-relations-inside-elasticsearch/</a></p>\n    </div>",
+      "url": "http://stackoverflow.com/a/25959830"
+    }
+  ]
+}

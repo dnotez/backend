@@ -1,0 +1,15 @@
+description = "Provides java client API for backend"
+
+dependencies {
+    testCompile 'junit:junit:4.11'
+
+    compile project(':common')
+    compile project(':api-dsl')
+
+    compile 'com.squareup.retrofit:retrofit:1.7.1'
+    compile 'com.squareup.okhttp:okhttp:2.1.0'
+    compile 'com.squareup.okio:okio:1.0.1'
+    compile 'com.squareup.okhttp:okhttp-urlconnection:2.1.0'
+    compile 'com.google.inject:guice:4.0-beta5'
+    compile 'com.beust:jcommander:1.35'
+}

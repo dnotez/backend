@@ -1,0 +1,6 @@
+dependencies {
+    testCompile 'junit:junit:4.11'
+
+    compile project(':common')
+    compile 'com.google.guava:guava:18.0'
+}
