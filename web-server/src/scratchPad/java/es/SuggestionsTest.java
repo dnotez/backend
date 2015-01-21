@@ -34,8 +34,8 @@ import static org.junit.Assert.assertTrue;
  * @since 21/11/14.
  */
 public class SuggestionsTest {
-    public static final String INDEX = "article_main";
-    public static final String ARTICLE = "article";
+    public static final String INDEX = "main";
+    public static final String TYPE = "note";
     public static final String TEMPLATE = "template0";
     private Client client;
 
@@ -83,9 +83,9 @@ public class SuggestionsTest {
                         .endObject()
                                 //end suggest
                         .endObject()
-                                //end article
+                                //end note
                         .endObject();
-                bulk.add(client.prepareIndex(INDEX, ARTICLE, Integer.toString(i)).setSource(object));
+                bulk.add(client.prepareIndex(INDEX, TYPE, Integer.toString(i)).setSource(object));
             }
             BulkResponse bulkResponse = bulk.execute().actionGet();
             Assume.assumeFalse(bulkResponse.hasFailures());

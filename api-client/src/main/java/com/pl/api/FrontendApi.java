@@ -2,18 +2,21 @@ package com.pl.api;
 
 
 import com.pl.dsl.*;
-import com.pl.dsl.article.Article;
-import com.pl.dsl.article.ArticleResult;
+import com.pl.dsl.note.Note;
+import com.pl.dsl.note.NoteResult;
 import com.pl.dsl.category.Category;
 import retrofit.http.*;
 
 import java.util.List;
 
 /**
+ * @deprecated The REST methods are not properly defined. Use NotesApi instead.
+ *
  * The methods defined here are used by client-side javascript application.
  * @author mamad
  * @since 10/11/14.
  */
+@Deprecated
 public interface FrontendApi {
 
     @GET("/api/ping")
@@ -28,28 +31,28 @@ public interface FrontendApi {
     List<Category> getCategories();
 
     /**
-     * Get the Article resource by id
+     * Get the Note resource by id
      *
-     * @return a resource response contains the code article for the given id with extra meta data if requested.
+     * @return a resource response contains the code note for the given id with extra meta data if requested.
      */
     @GET("/api/article/{id}")
-    ResourceResponse<Article> getArticle(@Path("id") String id);
+    ResourceResponse<Note> getArticle(@Path("id") String id);
 
     @POST("/api/article")
-    IdResponse newArticle(@Body Article request);
+    IdResponse newArticle(@Body Note request);
 
     @PUT("/api/article/{id}")
-    IdResponse updateArticle(@Path("id") String id, Article request);
+    IdResponse updateArticle(@Path("id") String id, Note request);
 
     @DELETE("/api/article/{id}")
     IdResponse deleteArticle(@Path("id") String id);
 
     //deprecated see issues #26
     @POST("/api/article/list")
-    PagedResponse<ArticleResult> listArticles(@Body PagedRequest request);
+    PagedResponse<NoteResult> listArticles(@Body PagedRequest request);
 
     //see issues #26
     @GET("/api/articles")
-    PagedResponse<ArticleResult> listArticles(@Query("startIndex") int startIndex, @Query("pageSize") int pageSize, @Query("query") String query);
+    PagedResponse<NoteResult> listArticles(@Query("startIndex") int startIndex, @Query("pageSize") int pageSize, @Query("query") String query);
 
 }

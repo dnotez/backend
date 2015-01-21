@@ -1,8 +1,8 @@
 package com.pl.web;
 
 import com.google.inject.AbstractModule;
-import com.pl.fetch.ArticleBodyFetcher;
-import com.pl.fetch.ArticleBodyFetcherImpl;
+import com.pl.fetch.NoteBodyFetcher;
+import com.pl.fetch.NoteBodyFetcherImpl;
 
 /**
  * @author mamad
@@ -11,6 +11,6 @@ import com.pl.fetch.ArticleBodyFetcherImpl;
 public class ContentDownloaderModule extends AbstractModule {
     @Override
     protected void configure() {
-        bind(ArticleBodyFetcher.class).to(ArticleBodyFetcherImpl.class);
+        bind(NoteBodyFetcher.class).to(NoteBodyFetcherImpl.class);
     }
 }

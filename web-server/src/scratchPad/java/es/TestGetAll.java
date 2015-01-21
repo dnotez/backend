@@ -15,7 +15,7 @@ import java.io.StringWriter;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import static com.pl.store.es.IndexName.MAIN;
-import static com.pl.store.es.IndexName.Type.ARTICLE;
+import static com.pl.store.es.IndexName.Type.NOTE;
 import static org.junit.Assert.*;
 
 /**
@@ -26,7 +26,7 @@ public class TestGetAll {
     @Test
     public void testGetAll() throws Exception {
         Client client = EsClientBuilder.client("push_lists");
-        SearchResponse searchResponse = client.prepareSearch(MAIN.indexName()).setTypes(ARTICLE.typeName())
+        SearchResponse searchResponse = client.prepareSearch(MAIN.indexName()).setTypes(NOTE.typeName())
                 .setSearchType(SearchType.QUERY_AND_FETCH)
                 .setQuery(QueryBuilders.matchAllQuery())
                 .setFrom(0)
@@ -43,7 +43,7 @@ public class TestGetAll {
     public void testAsyncGet() throws Exception {
         Client client = EsClientBuilder.client("push_lists");
         final AtomicBoolean called = new AtomicBoolean();
-        client.prepareSearch(MAIN.indexName()).setTypes(ARTICLE.typeName())
+        client.prepareSearch(MAIN.indexName()).setTypes(NOTE.typeName())
                 .setSearchType(SearchType.QUERY_AND_FETCH)
                 .setQuery(QueryBuilders.matchAllQuery())
                 .setFrom(0)
@@ -73,7 +73,7 @@ public class TestGetAll {
     public void testAsyncJacksonJsonGeneration() throws Exception {
         Client client = EsClientBuilder.client("push_lists");
         final AtomicBoolean called = new AtomicBoolean();
-        client.prepareSearch(MAIN.indexName()).setTypes(ARTICLE.typeName())
+        client.prepareSearch(MAIN.indexName()).setTypes(NOTE.typeName())
                 .setSearchType(SearchType.QUERY_AND_FETCH)
                 .setQuery(QueryBuilders.matchAllQuery())
                 .setFrom(0)

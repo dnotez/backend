@@ -107,7 +107,7 @@ subprojects {
     apply plugin: 'java'
 
     version = '0.0.1'
-    group = 'com.pushlists'
+    group = 'com.dnotez'
 
     configurations {
         integrationTest {

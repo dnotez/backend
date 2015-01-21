@@ -3,13 +3,12 @@
 == Indices
 Currently these indexes are defined in the store (See `IndexName` enum):
 
-* `main`: This is the main index for storing articles, categories, etc.
+* `main`: This is the main index for storing notes, tags, etc.
 * `account`: This index is used for saving user information, account details, etc.
 
 
 == Types
-=== `main` index types
-==== `article`
+==== `note`
 
 Any piece of text which can be selected in the browser and stored as a valuable information.
 Examples could be:
@@ -19,11 +18,11 @@ Examples could be:
 * a full page
 * selection of a text
 
-`article` could have attachments also, which means users can upload images, files, etc.
+`note` could have attachments also, which means users can upload images, files, etc.
 
-Suggested fiels for `article`:
+Suggested fields for `note`:
 
-* `url`: url of the article, searchable, analyzed as
+* `url`: url of the note, searchable, analyzed as
 * `title`:
 
 ==== `category`

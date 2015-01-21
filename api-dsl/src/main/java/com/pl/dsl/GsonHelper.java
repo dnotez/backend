@@ -4,8 +4,8 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.InstanceCreator;
 import com.google.gson.reflect.TypeToken;
-import com.pl.dsl.article.Article;
-import com.pl.dsl.article.ArticleResult;
+import com.pl.dsl.note.Note;
+import com.pl.dsl.note.NoteResult;
 
 import java.lang.reflect.Type;
 
@@ -14,9 +14,9 @@ import java.lang.reflect.Type;
  * @since 15/11/14.
  */
 public class GsonHelper {
-    public static final Type ARTICLE_RESULT_TYPE = new TypeToken<Result<Article>>() {
+    public static final Type NOTE_RESULT_TYPE = new TypeToken<Result<Note>>() {
     }.getType();
-    public static final Type ARTICLE_PAGED_RESPONSE_TYPE = new TypeToken<PagedResponse<ArticleResult>>() {
+    public static final Type NOTE_PAGED_RESPONSE_TYPE = new TypeToken<PagedResponse<NoteResult>>() {
     }.getType();
 
     public static GsonHelper create() {
@@ -25,15 +25,15 @@ public class GsonHelper {
 
     public Gson buildDefault() {
         return new GsonBuilder()
-                .registerTypeAdapter(ARTICLE_RESULT_TYPE, new ArticleResultTypeAdapter())
+                .registerTypeAdapter(NOTE_RESULT_TYPE, new NoteResultTypeAdapter())
                 .create();
     }
 
 
-    private class ArticleResultTypeAdapter implements InstanceCreator<Result<Article>> {
+    private class NoteResultTypeAdapter implements InstanceCreator<Result<Note>> {
         @Override
-        public Result<Article> createInstance(Type type) {
-            return new ArticleResult(0, null);
+        public Result<Note> createInstance(Type type) {
+            return new NoteResult(0, null);
         }
     }
 

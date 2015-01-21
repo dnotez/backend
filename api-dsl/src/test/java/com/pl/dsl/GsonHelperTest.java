@@ -2,8 +2,8 @@ package com.pl.dsl;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import com.pl.dsl.article.Article;
-import com.pl.dsl.article.ArticleResult;
+import com.pl.dsl.note.Note;
+import com.pl.dsl.note.NoteResult;
 import org.junit.Test;
 
 import java.util.Arrays;
@@ -19,20 +19,20 @@ public class GsonHelperTest {
     @Test
     public void testDeserializePagedResponse() throws Exception {
         Gson gson = GsonHelper.create().buildDefault();
-        ArticleResult result = new ArticleResult(1.2f, new Article("12", "u1", "t1", "b1"));
+        NoteResult result = new NoteResult(1.2f, new Note("12", "u1", "t1", "b1"));
         String json = gson.toJson(result);
         assertTrue(json, json.contains("score"));
-        List<ArticleResult> results = Arrays.asList(result);
-        PagedResponse<ArticleResult> response = new PagedResponse<>(results, 1);
-        json = gson.toJson(response, new TypeToken<PagedResponse<Article>>() {
+        List<NoteResult> results = Arrays.asList(result);
+        PagedResponse<NoteResult> response = new PagedResponse<>(results, 1);
+        json = gson.toJson(response, new TypeToken<PagedResponse<Note>>() {
         }.getType());
         assertTrue(json, json.contains("score"));
 
-        PagedResponse<ArticleResult> loaded = gson.fromJson(json, GsonHelper.ARTICLE_PAGED_RESPONSE_TYPE);
+        PagedResponse<NoteResult> loaded = gson.fromJson(json, GsonHelper.NOTE_PAGED_RESPONSE_TYPE);
         assertNotNull(loaded);
         assertNotNull(loaded.getResults());
         assertEquals(1, loaded.getResults().size());
-        ArticleResult r = loaded.getResults().get(0);
+        NoteResult r = loaded.getResults().get(0);
         assertNotNull(r);
         assertNotNull(r.getItem());
         assertEquals(result.getScore(), r.getScore(), 0);

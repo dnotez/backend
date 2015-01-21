@@ -1,7 +1,7 @@
 package es;
 
 import com.pl.EsTestHelper;
-import com.pl.store.es.ArticleTitleCompletionSuggester;
+import com.pl.store.es.NoteTitleCompletionSuggester;
 
 /**
  * @author mamad
@@ -15,8 +15,8 @@ public class IndexStackoverflowSamples {
                 .startEsNode()
                 .prepareEs()
                 .ensureGreen()
-                .withSuggester(new ArticleTitleCompletionSuggester())
-                .buildArticleStore()
+                .withSuggester(new NoteTitleCompletionSuggester())
+                .buildNoteStore()
                 .indexSampleData()
                 .ensureGreen()
                 .ensureIndexed();

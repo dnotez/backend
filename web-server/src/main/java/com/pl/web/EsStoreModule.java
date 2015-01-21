@@ -26,12 +26,12 @@ public class EsStoreModule extends AbstractModule {
     protected void configure() {
         Client client = localJvm ? EsClientBuilder.localClient(clusterName) : EsClientBuilder.client(clusterName);
         bind(Client.class).toInstance(client);
-        bind(EsQueryBuilderFactory.class).to(ArticleQueryBuilderFactory.class);
+        bind(EsQueryBuilderFactory.class).to(NoteQueryBuilderFactory.class);
         bind(UUIDGenerator.class).to(SimpleUUIDGenerator.class);
         bind(ActionTimeouts.class).to(DefaultTimeouts.class);
-        bind(ArticleSuggestionComposer.class).to(ArticleCompletionSuggesterComposer.class);
-        bind(IndexableArticleComposer.class).to(IndexableArticleComposerImpl.class);
-        bind(ArticleSuggester.class).to(ArticleTitleCompletionSuggester.class);
-        bind(ArticleStore.class).to(ArticleEsStore.class);
+        bind(NoteSuggestionComposer.class).to(NoteCompletionSuggesterComposer.class);
+        bind(IndexableNoteComposer.class).to(IndexableNoteComposerImpl.class);
+        bind(NoteSuggester.class).to(NoteTitleCompletionSuggester.class);
+        bind(NoteStore.class).to(NoteEsStore.class);
     }
 }

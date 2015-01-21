@@ -7,7 +7,7 @@ import com.pl.dsl.GetByKeyRequest.KeyType;
 import com.pl.dsl.PagedRequest;
 import com.pl.dsl.cli.CliSearchRequest;
 import com.pl.dsl.cli.SaveCmdRequest;
-import com.pl.store.es.ArticleStore;
+import com.pl.store.es.NoteStore;
 import com.pl.string.ParseUtils;
 import com.pl.web.HandlerHelper;
 import ratpack.exec.Fulfiller;
@@ -29,13 +29,13 @@ import static java.net.HttpURLConnection.HTTP_OK;
  */
 public class CliApiHandler implements Action<Chain> {
     private final HandlerHelper handlerHelper;
-    private final ArticleStore articleStore;
+    private final NoteStore noteStore;
     private final SaveCmdPersister cmdPersister;
 
     @Inject
-    public CliApiHandler(HandlerHelper handlerHelper, ArticleStore store, SaveCmdPersister cmdPersister) {
+    public CliApiHandler(HandlerHelper handlerHelper, NoteStore store, SaveCmdPersister cmdPersister) {
         this.handlerHelper = handlerHelper;
-        this.articleStore = store;
+        this.noteStore = store;
         this.cmdPersister = cmdPersister;
     }
 
@@ -66,7 +66,7 @@ public class CliApiHandler implements Action<Chain> {
                         .verify();
                 int count = ParseUtils.minAcceptableValue(n, 1);
                 GetByKeyRequest request = new GetByKeyRequest(key, count, safeValue(keyType, KeyType.ID));
-                articleStore.asyncGet(request,
+                noteStore.asyncGet(request,
                         handlerHelper.jsonConsumer(fulfiller),
                         fulfiller::error);
             }
@@ -80,7 +80,7 @@ public class CliApiHandler implements Action<Chain> {
             public void execute(Fulfiller<String> fulfiller) throws Exception {
                 String id = context.getPathTokens().get("param");
                 ArgChecker.create().notNull(id, "Id can not be null.").verify();
-                articleStore.asyncDelete(id, handlerHelper.jsonConsumer(fulfiller), fulfiller::error);
+                noteStore.asyncDelete(id, handlerHelper.jsonConsumer(fulfiller), fulfiller::error);
             }
         }).onError(newErrorAction(context))
                 .then(newJsonAction(context, HTTP_OK));
@@ -106,7 +106,7 @@ public class CliApiHandler implements Action<Chain> {
             public void execute(Fulfiller<String> fulfiller) throws Exception {
                 CliSearchRequest request = handlerHelper.fromBody(context, CliSearchRequest.class);
                 PagedRequest pagedRequest = new PagedRequest(request.getLabel());
-                articleStore.asyncList(pagedRequest, handlerHelper.jsonConsumer(fulfiller), fulfiller::error);
+                noteStore.asyncList(pagedRequest, handlerHelper.jsonConsumer(fulfiller), fulfiller::error);
             }
         }).onError(newErrorAction(context))
                 .then(newJsonAction(context, HTTP_OK));

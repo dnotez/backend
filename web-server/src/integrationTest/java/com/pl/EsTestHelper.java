@@ -43,8 +43,8 @@ public class EsTestHelper {
     private Client client;
 
     private BulkIndexer indexer = EsTestDataIndexer.create();
-    private ArticleEsStore store;
-    private ArticleSuggester suggester = new ArticleTitlePhraseSuggester();
+    private NoteEsStore store;
+    private NoteSuggester suggester = new NoteTitlePhraseSuggester();
     private boolean localJvm = true;
     private int indexedDocs;
 
@@ -82,7 +82,7 @@ public class EsTestHelper {
         try (InputStream mappingJsonStream = this.getClass().getResourceAsStream("/main_template.json")) {
             assumeNotNull("resource 'main_template.json' must be available.", mappingJsonStream);
             PutIndexTemplateResponse response = client.admin().indices()
-                    .preparePutTemplate("article_template")
+                    .preparePutTemplate("note_template")
                     .setSource(ByteStreams.toByteArray(mappingJsonStream))
                     .execute()
                     .actionGet();
@@ -105,7 +105,7 @@ public class EsTestHelper {
         return client;
     }
 
-    public ArticleEsStore getStore() {
+    public NoteEsStore getStore() {
         return store;
     }
 
@@ -115,22 +115,22 @@ public class EsTestHelper {
         return this;
     }
 
-    public EsTestHelper withSuggester(ArticleSuggester suggester) {
+    public EsTestHelper withSuggester(NoteSuggester suggester) {
         this.suggester = suggester;
         return this;
     }
 
-    public EsTestHelper buildArticleStore() {
+    public EsTestHelper buildNoteStore() {
         Preconditions.checkNotNull(client);
         SimpleUUIDGenerator uuidGenerator = new SimpleUUIDGenerator();
         DefaultTimeouts timeouts = new DefaultTimeouts();
-        ArticleQueryBuilderFactory queryBuilderFactory = new ArticleQueryBuilderFactory();
+        NoteQueryBuilderFactory queryBuilderFactory = new NoteQueryBuilderFactory();
         MD5DuplicateStreamDetector duplicateDetector = new MD5DuplicateStreamDetector();
         TikaPlainTextExtractor textExtractor = new TikaPlainTextExtractor();
-        ArticleSuggestionComposer completionSuggestionComposer = new ArticleCompletionSuggesterComposer();
-        IndexableArticleComposer articleComposer = new IndexableArticleComposerImpl(textExtractor, completionSuggestionComposer);
+        NoteSuggestionComposer completionSuggestionComposer = new NoteCompletionSuggesterComposer();
+        IndexableNoteComposer noteComposer = new IndexableNoteComposerImpl(textExtractor, completionSuggestionComposer);
 
-        store = new ArticleEsStore(client, uuidGenerator, timeouts, queryBuilderFactory, duplicateDetector, suggester, articleComposer);
+        store = new NoteEsStore(client, uuidGenerator, timeouts, queryBuilderFactory, duplicateDetector, suggester, noteComposer);
         return this;
     }
 

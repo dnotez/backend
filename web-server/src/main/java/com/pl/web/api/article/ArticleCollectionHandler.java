@@ -4,7 +4,7 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.pl.dsl.PagedRequest;
 import com.pl.dsl.PagedResponse;
-import com.pl.store.es.ArticleStore;
+import com.pl.store.es.NoteStore;
 import com.pl.web.AsyncHelper;
 import com.pl.web.HandlerHelper;
 import com.pl.web.QueryParams;
@@ -22,12 +22,12 @@ import ratpack.handling.Context;
 public class ArticleCollectionHandler implements Action<Chain> {
     private final HandlerHelper handlerHelper;
 
-    private final ArticleStore articleStore;
+    private final NoteStore noteStore;
 
     @Inject
-    public ArticleCollectionHandler(HandlerHelper handlerHelper, ArticleStore articleStore) {
+    public ArticleCollectionHandler(HandlerHelper handlerHelper, NoteStore noteStore) {
         this.handlerHelper = handlerHelper;
-        this.articleStore = articleStore;
+        this.noteStore = noteStore;
     }
 
     @Override
@@ -55,7 +55,7 @@ public class ArticleCollectionHandler implements Action<Chain> {
         context.promise(new Action<Fulfiller<String>>() {
             @Override
             public void execute(Fulfiller<String> fulfiller) throws Exception {
-                articleStore.asyncList(request, handlerHelper.jsonConsumer(fulfiller, PagedResponse::getResults),
+                noteStore.asyncList(request, handlerHelper.jsonConsumer(fulfiller, PagedResponse::getResults),
                         fulfiller::error);
             }
         }).onError(new Action<Throwable>() {

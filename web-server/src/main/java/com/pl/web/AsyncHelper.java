@@ -1,7 +1,7 @@
 package com.pl.web;
 
 import com.pl.bean.InvalidValueException;
-import com.pl.store.es.ArticleNotFoundException;
+import com.pl.store.es.NoteNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ratpack.func.Action;
@@ -29,8 +29,8 @@ public class AsyncHelper {
     public static Action<Throwable> newErrorAction(Context context) {
         return e -> {
             LOGGER.error("Error in handling request", e);
-            if (e instanceof ArticleNotFoundException) {
-                StatusHelper.sendNotFound(context, ((ArticleNotFoundException) e).getId());
+            if (e instanceof NoteNotFoundException) {
+                StatusHelper.sendNotFound(context, ((NoteNotFoundException) e).getId());
             } else if (e instanceof InvalidValueException) {
                 StatusHelper.sendBadRequest(context, e.getMessage());
             } else {

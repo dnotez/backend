@@ -9,7 +9,7 @@ import java.util.List;
  * @since 14/11/14.
  */
 public enum IndexName {
-    MAIN("article_main", Type.ARTICLE, Type.CATEGORY),
+    MAIN("main", Type.NOTE, Type.CATEGORY),
     ACCOUNT("account", Type.USER, Type.TEAM, Type.ACCOUNT),;
 
     private final List<Type> types;
@@ -30,7 +30,7 @@ public enum IndexName {
 
     public static enum Type {
         //types for MAIN index
-        ARTICLE,
+        NOTE,
         CATEGORY,
 
         //types for ACCOUNT index

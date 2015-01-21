@@ -5,6 +5,7 @@ import com.google.gson.Gson;
 import com.pl.api.CliApi;
 import com.pl.api.ExtensionApi;
 import com.pl.api.FrontendApi;
+import com.pl.api.NotesApi;
 import com.pl.dsl.GsonHelper;
 import com.squareup.okhttp.OkHttpClient;
 import retrofit.client.Client;
@@ -66,6 +67,14 @@ public class ApiClientBuilder {
 
     public CliApi cmdLineApi() {
         return ClientBuilder.create(CliApi.class)
+                .withEndpoint(serverUrl)
+                .withConverter(new GsonConverter(gson, Charsets.UTF_8.name()))
+                .withClient(client)
+                .build();
+    }
+
+    public NotesApi notesApi() {
+        return ClientBuilder.create(NotesApi.class)
                 .withEndpoint(serverUrl)
                 .withConverter(new GsonConverter(gson, Charsets.UTF_8.name()))
                 .withClient(client)

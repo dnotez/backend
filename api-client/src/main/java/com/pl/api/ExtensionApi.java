@@ -4,9 +4,9 @@ import com.pl.dsl.IdResponse;
 import com.pl.dsl.PagedRequest;
 import com.pl.dsl.PagedResponse;
 import com.pl.dsl.Pong;
-import com.pl.dsl.article.Article;
-import com.pl.dsl.article.ArticleResult;
-import com.pl.dsl.article.SuggestionResponse;
+import com.pl.dsl.note.Note;
+import com.pl.dsl.note.NoteResult;
+import com.pl.dsl.note.SuggestionResponse;
 import com.pl.dsl.extension.GetByUrlRequest;
 import com.pl.dsl.extension.SaveSOFAnswerResponse;
 import retrofit.http.Body;
@@ -25,18 +25,18 @@ public interface ExtensionApi {
     Pong ping();
 
     @POST("/extension/sof/answer")
-    SaveSOFAnswerResponse saveStackOverflowAnswer(@Body Article request);
+    SaveSOFAnswerResponse saveStackOverflowAnswer(@Body Note request);
 
 
     @POST("/extension/page")
-    IdResponse savePage(@Body Article request);
+    IdResponse savePage(@Body Note request);
 
     @POST("/extension/selected")
-    IdResponse saveSelectedText(@Body Article request);
+    IdResponse saveSelectedText(@Body Note request);
 
 
     @POST("/extension/check")
-    PagedResponse<ArticleResult> isAlreadySaved(@Body GetByUrlRequest request);
+    PagedResponse<NoteResult> isAlreadySaved(@Body GetByUrlRequest request);
 
     @POST("/extension/suggestion")
     SuggestionResponse suggestion(@Body PagedRequest request);

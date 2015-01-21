@@ -2,8 +2,8 @@ package com.pl.web.extension;
 
 import com.google.inject.Inject;
 import com.pl.dsl.IdResponse;
-import com.pl.dsl.article.Article;
-import com.pl.store.es.ArticleStore;
+import com.pl.dsl.note.Note;
+import com.pl.store.es.NoteStore;
 import com.pl.store.es.StoreActionFailedException;
 import com.pl.web.HandlerHelper;
 import org.slf4j.Logger;
@@ -28,12 +28,12 @@ public class SOFApiHandler implements Action<Chain> {
     public static final Logger LOGGER = LoggerFactory.getLogger(SOFApiHandler.class);
 
     private final HandlerHelper handlerHelper;
-    private final ArticleStore articleStore;
+    private final NoteStore noteStore;
 
     @Inject
-    public SOFApiHandler(HandlerHelper handlerHelper, ArticleStore store) {
+    public SOFApiHandler(HandlerHelper handlerHelper, NoteStore store) {
         this.handlerHelper = handlerHelper;
-        this.articleStore = store;
+        this.noteStore = store;
     }
 
     @Override
@@ -46,14 +46,14 @@ public class SOFApiHandler implements Action<Chain> {
         context.promise(new Action<Fulfiller<String>>() {
             @Override
             public void execute(Fulfiller<String> fulfiller) throws Exception {
-                Article article = handlerHelper.fromBody(context, Article.class);
+                Note note = handlerHelper.fromBody(context, Note.class);
                 try {
-                    IdResponse response = articleStore.save(article);
+                    IdResponse response = noteStore.save(note);
                     handlerHelper.jsonConsumer(fulfiller).accept(response);
                 } catch (StoreActionFailedException e) {
-                    LOGGER.error("Store failed for SOF:{}, action:{}, id:{}, article:{}", article.getUrl(), e.getAction(), e.getId(), article, e);
+                    LOGGER.error("Store failed for SOF:{}, action:{}, id:{}, note:{}", note.getUrl(), e.getAction(), e.getId(), note, e);
                     handlerHelper.jsonConsumer(fulfiller)
-                            .accept(IdResponse.create(e.getId()).error("Could not save article"));
+                            .accept(IdResponse.create(e.getId()).error("Could not save note"));
                 }
             }
         }).onError(newErrorAction(context))

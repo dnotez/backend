@@ -5,7 +5,7 @@ import com.google.common.base.MoreObjects;
 /**
  * A bash command to be saved.
  * <p>
- * This will be converted to an article with proper field values and then stored in the system.
+ * This will be converted to an note with proper field values and then stored in the system.
  * <p>
  * The url for the bash command will be automatically generated.
  * Title and body usually the same.

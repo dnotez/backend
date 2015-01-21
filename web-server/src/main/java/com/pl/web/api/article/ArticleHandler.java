@@ -5,8 +5,8 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.pl.dsl.IdResponse;
 import com.pl.dsl.PagedRequest;
-import com.pl.dsl.article.Article;
-import com.pl.store.es.ArticleStore;
+import com.pl.dsl.note.Note;
+import com.pl.store.es.NoteStore;
 import com.pl.store.es.StoreActionFailedException;
 import com.pl.web.AsyncHelper;
 import com.pl.web.HandlerHelper;
@@ -23,34 +23,34 @@ import java.io.IOException;
  * @since 13/11/14.
  */
 @Singleton
-public class ArticleHandler extends DAOHandler<Article> {
+public class ArticleHandler extends DAOHandler<Note> {
 
-    private final ArticleStore articleStore;
+    private final NoteStore noteStore;
 
     @Inject
-    public ArticleHandler(ArticleStore articleStore, HandlerHelper handlerHelper) {
-        super(Article.class, handlerHelper);
-        this.articleStore = articleStore;
+    public ArticleHandler(NoteStore noteStore, HandlerHelper handlerHelper) {
+        super(Note.class, handlerHelper);
+        this.noteStore = noteStore;
     }
 
     @Override
-    protected Optional<Article> findById(String id) throws IOException, StoreActionFailedException {
-        return articleStore.findById(id);
+    protected Optional<Note> findById(String id) throws IOException, StoreActionFailedException {
+        return noteStore.findById(id);
     }
 
     @Override
-    protected IdResponse save(Article object) throws IOException, StoreActionFailedException {
-        return articleStore.save(object);
+    protected IdResponse save(Note object) throws IOException, StoreActionFailedException {
+        return noteStore.save(object);
     }
 
     @Override
-    protected IdResponse update(Article object) {
-        return articleStore.update(object);
+    protected IdResponse update(Note object) {
+        return noteStore.update(object);
     }
 
     @Override
     protected IdResponse delete(String id) {
-        return articleStore.delete(id);
+        return noteStore.delete(id);
     }
 
     @Override
@@ -58,7 +58,7 @@ public class ArticleHandler extends DAOHandler<Article> {
         context.promise(new Action<Fulfiller<String>>() {
             @Override
             public void execute(Fulfiller<String> fulfiller) throws Exception {
-                articleStore.asyncList(request, handlerHelper.jsonConsumer(fulfiller), fulfiller::error);
+                noteStore.asyncList(request, handlerHelper.jsonConsumer(fulfiller), fulfiller::error);
             }
         }).onError(new Action<Throwable>() {
                        @Override

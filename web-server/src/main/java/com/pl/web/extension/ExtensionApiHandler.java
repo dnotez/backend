@@ -4,11 +4,11 @@ import com.google.common.base.Optional;
 import com.google.inject.Inject;
 import com.pl.dsl.IdResponse;
 import com.pl.dsl.PagedRequest;
-import com.pl.dsl.article.Article;
+import com.pl.dsl.note.Note;
 import com.pl.dsl.extension.GetByUrlRequest;
-import com.pl.fetch.ArticleBodyFetcher;
+import com.pl.fetch.NoteBodyFetcher;
 import com.pl.fetch.FetchResponse;
-import com.pl.store.es.ArticleStore;
+import com.pl.store.es.NoteStore;
 import com.pl.store.es.StoreActionFailedException;
 import com.pl.web.HandlerHelper;
 import org.slf4j.Logger;
@@ -29,14 +29,14 @@ public class ExtensionApiHandler implements Action<Chain> {
     private static final Logger LOGGER = LoggerFactory.getLogger(ExtensionApiHandler.class);
 
     private final HandlerHelper handlerHelper;
-    private final ArticleBodyFetcher articleBodyFetcher;
-    private final ArticleStore articleStore;
+    private final NoteBodyFetcher noteBodyFetcher;
+    private final NoteStore noteStore;
 
     @Inject
-    public ExtensionApiHandler(HandlerHelper handlerHelper, ArticleBodyFetcher articleBodyFetcher, ArticleStore store) {
+    public ExtensionApiHandler(HandlerHelper handlerHelper, NoteBodyFetcher noteBodyFetcher, NoteStore store) {
         this.handlerHelper = handlerHelper;
-        this.articleBodyFetcher = articleBodyFetcher;
-        this.articleStore = store;
+        this.noteBodyFetcher = noteBodyFetcher;
+        this.noteStore = store;
     }
 
     @Override
@@ -59,22 +59,22 @@ public class ExtensionApiHandler implements Action<Chain> {
         context.promise(new Action<Fulfiller<String>>() {
             @Override
             public void execute(Fulfiller<String> fulfiller) throws Exception {
-                Article article = handlerHelper.fromBody(context, Article.class);
-                FetchResponse fetchResponse = articleBodyFetcher.fetchBody(article.getUrl());
+                Note note = handlerHelper.fromBody(context, Note.class);
+                FetchResponse fetchResponse = noteBodyFetcher.fetchBody(note.getUrl());
                 if (!fetchResponse.isValid()) {
                     handlerHelper.jsonConsumer(fulfiller)
-                            .accept(IdResponse.create(null).error("Could not fetch the article body."));
+                            .accept(IdResponse.create(null).error("Could not fetch the note body."));
                     return;
                 }
                 try {
-                    article.setBody(fetchResponse.getBody());
-                    IdResponse response = articleStore.save(article);
+                    note.setBody(fetchResponse.getBody());
+                    IdResponse response = noteStore.save(note);
                     handlerHelper.jsonConsumer(fulfiller).accept(response);
                 } catch (StoreActionFailedException e) {
-                    LOGGER.error("Store failed for page, action:{}, id:{}, article:{}",
-                            e.getAction(), e.getId(), article, e);
+                    LOGGER.error("Store failed for page, action:{}, id:{}, note:{}",
+                            e.getAction(), e.getId(), note, e);
                     handlerHelper.jsonConsumer(fulfiller)
-                            .accept(IdResponse.create(e.getId()).error("Could not save article."));
+                            .accept(IdResponse.create(e.getId()).error("Could not save note."));
                 }
             }
         }).onError(newErrorAction(context))
@@ -85,17 +85,17 @@ public class ExtensionApiHandler implements Action<Chain> {
         context.promise(new Action<Fulfiller<String>>() {
             @Override
             public void execute(Fulfiller<String> fulfiller) throws Exception {
-                Article article = handlerHelper.fromBody(context, Article.class);
+                Note note = handlerHelper.fromBody(context, Note.class);
                 try {
-                    //todo: pre-process body of article, detect type of it (e.g. bash script, source code or normal text)
-                    //todo: change url of article, the curl url is the url of the page, but the article url must point to pl site.
-                    IdResponse response = articleStore.save(article);
+                    //todo: pre-process body of note, detect type of it (e.g. bash script, source code or normal text)
+                    //todo: change url of note, the curl url is the url of the page, but the note url must point to pl site.
+                    IdResponse response = noteStore.save(note);
                     handlerHelper.jsonConsumer(fulfiller).accept(response);
                 } catch (StoreActionFailedException e) {
-                    LOGGER.error("Store failed for selected text, action:{}, id:{}, article:{}",
-                            e.getAction(), e.getId(), article, e);
+                    LOGGER.error("Store failed for selected text, action:{}, id:{}, note:{}",
+                            e.getAction(), e.getId(), note, e);
                     handlerHelper.jsonConsumer(fulfiller)
-                            .accept(IdResponse.create(e.getId()).error("Could not save article."));
+                            .accept(IdResponse.create(e.getId()).error("Could not save note."));
                 }
             }
         }).onError(newErrorAction(context))
@@ -107,7 +107,7 @@ public class ExtensionApiHandler implements Action<Chain> {
             @Override
             public void execute(Fulfiller<String> fulfiller) throws Exception {
                 GetByUrlRequest request = handlerHelper.fromBody(context, GetByUrlRequest.class);
-                articleStore.asyncGet(request, handlerHelper.jsonConsumer(fulfiller), fulfiller::error);
+                noteStore.asyncGet(request, handlerHelper.jsonConsumer(fulfiller), fulfiller::error);
             }
         }).onError(newErrorAction(context))
                 .then(newJsonAction(context));
@@ -118,7 +118,7 @@ public class ExtensionApiHandler implements Action<Chain> {
             @Override
             public void execute(Fulfiller<String> fulfiller) throws Exception {
                 PagedRequest request = handlerHelper.fromBody(context, PagedRequest.class);
-                articleStore.asyncSuggestion(request, handlerHelper.jsonConsumer(fulfiller), fulfiller::error);
+                noteStore.asyncSuggestion(request, handlerHelper.jsonConsumer(fulfiller), fulfiller::error);
             }
         }).onError(newErrorAction(context))
                 .then(newJsonAction(context));
@@ -129,11 +129,11 @@ public class ExtensionApiHandler implements Action<Chain> {
             @Override
             public void execute(Fulfiller<String> fulfiller) throws Exception {
                 String id = context.getPathTokens().get("id");
-                Optional<Article> optional = articleStore.findById(id);
+                Optional<Note> optional = noteStore.findById(id);
                 if (optional.isPresent()) {
                     fulfiller.success(optional.get().getUrl());
                 } else {
-                    throw new Exception("Article with id:" + id + " not found");
+                    throw new Exception("Note with id:" + id + " not found");
                 }
             }
         }).onError(newErrorAction(context))

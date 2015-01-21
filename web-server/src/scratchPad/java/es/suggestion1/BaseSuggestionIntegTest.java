@@ -3,9 +3,9 @@ package es.suggestion1;
 import com.google.common.collect.ImmutableList;
 import com.google.common.util.concurrent.Uninterruptibles;
 import com.pl.dsl.PagedRequest;
-import com.pl.dsl.article.SuggestionResponse;
-import com.pl.store.es.ArticleCompletionSuggesterComposer;
-import com.pl.store.es.ArticleSuggester;
+import com.pl.dsl.note.SuggestionResponse;
+import com.pl.store.es.NoteCompletionSuggesterComposer;
+import com.pl.store.es.NoteSuggester;
 import org.elasticsearch.action.admin.indices.create.CreateIndexRequestBuilder;
 import org.elasticsearch.action.index.IndexRequestBuilder;
 import org.elasticsearch.common.xcontent.XContentBuilder;
@@ -20,10 +20,10 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import static com.pl.dsl.article.ArticleFields.SUGGEST;
-import static com.pl.dsl.article.ArticleFields.SUGGEST_PHRASE;
+import static com.pl.dsl.note.NoteFields.SUGGEST;
+import static com.pl.dsl.note.NoteFields.SUGGEST_PHRASE;
 import static com.pl.store.es.IndexName.MAIN;
-import static com.pl.store.es.IndexName.Type.ARTICLE;
+import static com.pl.store.es.IndexName.Type.NOTE;
 import static org.elasticsearch.cluster.metadata.IndexMetaData.SETTING_NUMBER_OF_SHARDS;
 import static org.elasticsearch.common.settings.ImmutableSettings.settingsBuilder;
 import static org.elasticsearch.test.hamcrest.ElasticsearchAssertions.assertAcked;
@@ -47,7 +47,7 @@ public class BaseSuggestionIntegTest extends ElasticsearchIntegrationTest {
 
         XContentBuilder mapping = XContentFactory.jsonBuilder()
                 .startObject()
-                .startObject(ARTICLE.typeName())
+                .startObject(NOTE.typeName())
                 .startObject("properties")
                 .startObject(SUGGEST_PHRASE)
                 .field("type", "string")
@@ -61,7 +61,7 @@ public class BaseSuggestionIntegTest extends ElasticsearchIntegrationTest {
                 .endObject()
                 .endObject()
                 .endObject();
-        assertAcked(builder.addMapping(ARTICLE.typeName(), mapping));
+        assertAcked(builder.addMapping(NOTE.typeName(), mapping));
         ensureGreen();
 
         ImmutableList.Builder<String> titles = ImmutableList.<String>builder();
@@ -74,21 +74,21 @@ public class BaseSuggestionIntegTest extends ElasticsearchIntegrationTest {
         titles.add("Election");
 
         List<IndexRequestBuilder> builders = new ArrayList<>();
-        ArticleCompletionSuggesterComposer suggesterComposer = new ArticleCompletionSuggesterComposer();
+        NoteCompletionSuggesterComposer suggesterComposer = new NoteCompletionSuggesterComposer();
         for (String title : titles.build()) {
             Map<String, Object> suggestionObject = suggesterComposer.createSuggestionObject(title, title);
-            XContentBuilder article = XContentFactory.jsonBuilder()
+            XContentBuilder note = XContentFactory.jsonBuilder()
                     .startObject()
                     .field(SUGGEST_PHRASE, title)
                     .field(SUGGEST, suggestionObject)
                     .endObject();
-            builders.add(client().prepareIndex(MAIN.indexName(), ARTICLE.typeName())
-                    .setSource(article));
+            builders.add(client().prepareIndex(MAIN.indexName(), NOTE.typeName())
+                    .setSource(note));
         }
         indexRandom(true, builders);
     }
 
-    protected void callAndVerify(String query, ArticleSuggester suggester) {
+    protected void callAndVerify(String query, NoteSuggester suggester) {
         PagedRequest request = PagedRequest.suggestion(query);
         AtomicBoolean called = new AtomicBoolean(false);
         AtomicBoolean hasSuggestion = new AtomicBoolean(false);

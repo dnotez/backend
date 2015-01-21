@@ -1,7 +1,7 @@
 package com.pl.dsl.extension;
 
 import com.google.common.collect.Sets;
-import com.pl.dsl.article.ArticleFields;
+import com.pl.dsl.note.NoteFields;
 
 import java.util.List;
 import java.util.Set;
@@ -37,7 +37,7 @@ public class GetByUrlRequest {
     }
 
     public GetByUrlRequest idOnly() {
-        return withFields(ArticleFields.ID);
+        return withFields(NoteFields.ID);
     }
 
     public List<String> getUrls() {
