@@ -5,9 +5,9 @@ import com.pl.client.ApiClientBuilder;
 import com.pl.dsl.PagedRequest;
 import com.pl.dsl.PagedResponse;
 import com.pl.dsl.Pong;
+import com.pl.dsl.extension.GetByUrlRequest;
 import com.pl.dsl.note.NoteResult;
 import com.pl.dsl.note.SuggestionResponse;
-import com.pl.dsl.extension.GetByUrlRequest;
 import org.junit.Test;
 
 import java.util.List;
@@ -60,14 +60,14 @@ public class ExtensionApiTest extends BaseApiTest {
         esHelper.wipeIndex()
                 .ensureIndexed(0);
         //no note indexed yet
-        SuggestionResponse suggestion = extensionApi.suggestion(PagedRequest.suggestion("prog"));
+        SuggestionResponse suggestion = extensionApi.suggestion(PagedRequest.create("prog"));
         assertNotNull(suggestion);
         assertFalse(suggestion.isError());
         assertNotNull(suggestion.getResults());
         assertTrue(suggestion.getResults().isEmpty());
         esHelper.indexSampleData().ensureIndexed();
 
-        suggestion = extensionApi.suggestion(PagedRequest.suggestion("cur"));
+        suggestion = extensionApi.suggestion(PagedRequest.create("cur"));
         assertNotNull(suggestion);
         assertFalse(suggestion.isError());
         assertNotNull(suggestion.getResults());

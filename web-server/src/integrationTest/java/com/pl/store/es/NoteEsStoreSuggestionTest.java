@@ -46,7 +46,7 @@ public class NoteEsStoreSuggestionTest {
     public void testPhraseSuggestion() throws Exception {
         NoteEsStore store = esHelper.getStore();
 
-        PagedRequest request = PagedRequest.suggestion("te");
+        PagedRequest request = PagedRequest.create("te");
         AtomicBoolean called = new AtomicBoolean(false);
         AtomicBoolean hasSuggestion = new AtomicBoolean(false);
 

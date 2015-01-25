@@ -2,12 +2,13 @@ package com.pl.web.extension;
 
 import com.google.common.base.Optional;
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import com.pl.dsl.IdResponse;
 import com.pl.dsl.PagedRequest;
-import com.pl.dsl.note.Note;
 import com.pl.dsl.extension.GetByUrlRequest;
-import com.pl.fetch.NoteBodyFetcher;
+import com.pl.dsl.note.Note;
 import com.pl.fetch.FetchResponse;
+import com.pl.fetch.NoteBodyFetcher;
 import com.pl.store.es.NoteStore;
 import com.pl.store.es.StoreActionFailedException;
 import com.pl.web.HandlerHelper;
@@ -25,6 +26,7 @@ import static com.pl.web.AsyncHelper.newJsonAction;
  * @author mamad
  * @since 23/11/14.
  */
+@Singleton
 public class ExtensionApiHandler implements Action<Chain> {
     private static final Logger LOGGER = LoggerFactory.getLogger(ExtensionApiHandler.class);
 

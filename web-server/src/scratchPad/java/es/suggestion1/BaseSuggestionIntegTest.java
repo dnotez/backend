@@ -89,7 +89,7 @@ public class BaseSuggestionIntegTest extends ElasticsearchIntegrationTest {
     }
 
     protected void callAndVerify(String query, NoteSuggester suggester) {
-        PagedRequest request = PagedRequest.suggestion(query);
+        PagedRequest request = PagedRequest.create(query);
         AtomicBoolean called = new AtomicBoolean(false);
         AtomicBoolean hasSuggestion = new AtomicBoolean(false);
 

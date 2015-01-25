@@ -10,11 +10,11 @@ import com.google.inject.Singleton;
 import com.pl.bean.ArgChecker;
 import com.pl.bean.InvalidValueException;
 import com.pl.dsl.*;
+import com.pl.dsl.extension.GetByUrlRequest;
 import com.pl.dsl.note.Note;
 import com.pl.dsl.note.NoteFields;
 import com.pl.dsl.note.NoteResult;
 import com.pl.dsl.note.SuggestionResponse;
-import com.pl.dsl.extension.GetByUrlRequest;
 import com.pl.duplicate.DuplicateStreamDetector;
 import com.pl.store.es.StoreActionFailedException.Action;
 import com.pl.time.DateTimeHelper;
@@ -27,6 +27,7 @@ import org.elasticsearch.action.index.IndexResponse;
 import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.action.search.SearchType;
+import org.elasticsearch.action.update.UpdateResponse;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.common.xcontent.XContentBuilder;
 import org.elasticsearch.index.query.FilterBuilder;
@@ -171,12 +172,12 @@ public class NoteEsStore implements NoteStore {
 
                         @Override
                         public void onFailure(Throwable e) {
-                            LOGGER.error("Note save failed, id:{}, url:{}", id, note.getUrl(), e);
+                            LOGGER.error("Saving note failed, id:{}, url:{}", id, note.getUrl(), e);
                             onError.accept(e);
                         }
                     });
         } catch (IOException e) {
-            LOGGER.error("IO error while saving note with url:{}indexAndWait", note.getUrl(), e);
+            LOGGER.error("IO error while saving note with url:{}", note.getUrl(), e);
             onError.accept(StoreActionFailedException.createFailed(id));
         } catch (ElasticsearchException e) {
             LOGGER.error("Elasticsearch error while saving note with url:{}", note.getUrl(), e);
@@ -188,8 +189,41 @@ public class NoteEsStore implements NoteStore {
     }
 
     @Override
-    public IdResponse update(Note object) {
-        return null;
+    public void asyncUpdate(Note note, Consumer<IdResponse> onSuccess, Consumer<Throwable> onError) {
+        try {
+            ArgChecker.create().notNull(note, "Note can not be null.")
+                    .notNull(note.getId(), "Id can not be null")
+                    .verify();
+        } catch (InvalidValueException e) { //NOSONAR
+            onError.accept(e);
+            return;
+        }
+        String id = note.getId();
+        try {
+            XContentBuilder builder = noteComposer.compose(note);
+            client.prepareUpdate(MAIN.indexName(), NOTE.typeName(), note.getId())
+                    .setDocAsUpsert(false)
+                    .setDoc(builder)
+                    .execute()
+                    .addListener(new ActionListener<UpdateResponse>() {
+                        @Override
+                        public void onResponse(UpdateResponse updateResponse) {
+                            onSuccess.accept(IdResponse.create(id));
+                        }
+
+                        @Override
+                        public void onFailure(Throwable e) {
+                            LOGGER.error("Updating note failed, id:{}", id, e);
+                            onError.accept(e);
+                        }
+                    });
+        } catch (IOException e) {
+            LOGGER.error("IO error while updating note with id:{}", id, e);
+            onError.accept(StoreActionFailedException.updateFailed(id));
+        } catch (StoreActionFailedException e) {
+            LOGGER.error("Internal error while updating note with id:{}", id, e);
+            onError.accept(StoreActionFailedException.updateFailed(id));
+        }
     }
 
     @Override

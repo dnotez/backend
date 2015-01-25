@@ -28,6 +28,7 @@ import static com.pl.web.AsyncHelper.newJsonAction;
  * @author mamad
  * @since 13/11/14.
  */
+@Deprecated
 public abstract class DAOHandler<R> implements Action<Chain> {
     public static final Logger LOGGER = LoggerFactory.getLogger(DAOHandler.class);
     protected final HandlerHelper handlerHelper;

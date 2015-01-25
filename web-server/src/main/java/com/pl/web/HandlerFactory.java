@@ -7,6 +7,7 @@ import com.pl.web.api.category.CategoryModule;
 import com.pl.web.cli.CliApiHandler;
 import com.pl.web.cli.CliModule;
 import com.pl.web.extension.ExtensionApiHandler;
+import com.pl.web.user.UsersChainHandler;
 import ratpack.codahale.metrics.CodaHaleMetricsModule;
 import ratpack.codahale.metrics.MetricsWebsocketBroadcastHandler;
 import ratpack.guice.Guice;
@@ -49,6 +50,7 @@ public class HandlerFactory implements ratpack.launch.HandlerFactory {
                 })
                 .build(chain -> chain
                         .prefix("cli", chain.getRegistry().get(CliApiHandler.class))
+                        .prefix("users", chain.getRegistry().get(UsersChainHandler.class))
                         .prefix("api", chain.getRegistry().get(ApiHandlers.class))
                         .prefix("extension", chain.getRegistry().get(ExtensionApiHandler.class))
                                 //.prefix("", nested -> nested.assets("."))

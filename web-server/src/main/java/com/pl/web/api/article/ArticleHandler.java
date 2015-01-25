@@ -21,8 +21,10 @@ import java.io.IOException;
 /**
  * @author mamad
  * @since 13/11/14.
+ * @deprecated Replaced with com.pl.web.user.note.NotesChainHandler
  */
 @Singleton
+@Deprecated
 public class ArticleHandler extends DAOHandler<Note> {
 
     private final NoteStore noteStore;
@@ -45,7 +47,7 @@ public class ArticleHandler extends DAOHandler<Note> {
 
     @Override
     protected IdResponse update(Note object) {
-        return noteStore.update(object);
+        return IdResponse.create(object.getId()).error("Not implemented.");
     }
 
     @Override

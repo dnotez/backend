@@ -5,10 +5,10 @@ import com.pl.dsl.GetByKeyRequest;
 import com.pl.dsl.IdResponse;
 import com.pl.dsl.PagedRequest;
 import com.pl.dsl.PagedResponse;
+import com.pl.dsl.extension.GetByUrlRequest;
 import com.pl.dsl.note.Note;
 import com.pl.dsl.note.NoteResult;
 import com.pl.dsl.note.SuggestionResponse;
-import com.pl.dsl.extension.GetByUrlRequest;
 
 import java.io.IOException;
 import java.util.function.Consumer;
@@ -28,7 +28,8 @@ public interface NoteStore {
     IdResponse save(Note object) throws IOException, StoreActionFailedException;
 
     void asyncSave(Note note, Consumer<IdResponse> onSuccess, Consumer<Throwable> onError);
-    IdResponse update(Note object);
+
+    void asyncUpdate(Note note, Consumer<IdResponse> onSuccess, Consumer<Throwable> onError);
 
     IdResponse delete(String id);
 

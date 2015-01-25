@@ -32,6 +32,10 @@ public class StoreActionFailedException extends Exception {
         return new StoreActionFailedException(Action.CREATE, id);
     }
 
+    public static StoreActionFailedException updateFailed(String id) {
+        return new StoreActionFailedException(Action.UPDATE, id);
+    }
+
     public static StoreActionFailedException getFailed(String id) {
         return new StoreActionFailedException(Action.GET, id);
     }
@@ -60,6 +64,7 @@ public class StoreActionFailedException extends Exception {
         CREATE,
         GET,
         SEARCH,
+        UPDATE,
     }
 
 }

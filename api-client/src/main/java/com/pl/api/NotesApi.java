@@ -16,17 +16,17 @@ public interface NotesApi {
     /**
      * List user's notes.
      *
-     * @param user name of the user
+     * @param user       name of the user
      * @param startIndex start index of the notes. default is 0
-     * @param pageSize number of notes in the response, default is 10
+     * @param pageSize   number of notes in the response, default is 10
      * @return a paged response contains total number and list of notes for the current page
      */
     @GET("/users/{user}/notes")
     PagedResponse<NoteResult> list(@Path("user") String user, @Query("startIndex") int startIndex,
-                                      @Query("pageSize") int pageSize);
+                                   @Query("pageSize") int pageSize);
 
     @POST("/users/{user}/notes")
-    IdResponse create(@Path("user") String user,@Body Note request);
+    IdResponse create(@Path("user") String user, @Body Note request);
 
     @POST("/users/{user}/notes/search")
     PagedResponse<NoteResult> search(@Path("user") String user, @Body PagedRequest request);
@@ -35,7 +35,7 @@ public interface NotesApi {
     ResourceResponse<Note> get(@Path("user") String user, @Path("id") String id);
 
     @PUT("/users/{user}/notes/{id}")
-    IdResponse update(@Path("user") String user, @Path("id") String id, Note request);
+    IdResponse update(@Path("user") String user, @Path("id") String id, @Body Note request);
 
     @DELETE("/users/{user}/notes/{id}")
     IdResponse delete(@Path("user") String user, @Path("id") String id);

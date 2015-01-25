@@ -16,6 +16,7 @@ import org.elasticsearch.client.Client;
 import org.elasticsearch.client.Requests;
 import org.elasticsearch.common.Priority;
 import org.elasticsearch.common.unit.TimeValue;
+import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.indices.IndexMissingException;
 import org.hamcrest.Matchers;
@@ -152,24 +153,36 @@ public class EsTestHelper {
     }
 
     public EsTestHelper ensureIndexed(long numDocs) {
+        return ensureIndexed(numDocs, false);
+    }
+
+    public EsTestHelper ensureIndexed(long numDocs, boolean exactMatch) {
+        return ensureIndexed(numDocs, exactMatch, QueryBuilders.matchAllQuery());
+    }
+
+    public EsTestHelper ensureIndexed(long numDocs, boolean exactMatch, QueryBuilder queryBuilder) {
         long indexed = 0;
         int wait = 0;
         while (wait < 10) {
             try {
                 CountResponse countResponse = client.prepareCount(MAIN.indexName())
-                        .setQuery(QueryBuilders.matchAllQuery())
+                        .setQuery(queryBuilder)
                         .execute().actionGet();
                 indexed = countResponse.getCount();
             } catch (IndexMissingException e) {
                 //ignored
             }
-            if (indexed >= numDocs) {
+            if ((exactMatch && indexed == numDocs) || (!exactMatch && indexed >= numDocs)) {
                 break;
             }
             Uninterruptibles.sleepUninterruptibly(500, TimeUnit.MILLISECONDS);
             wait++;
         }
-        assumeThat("Number of indexed documents must be equal or grater than:" + numDocs, indexed, greaterThanOrEqualTo(numDocs));
+        if (exactMatch) {
+            assumeThat("Number of indexed documents must be:" + numDocs, indexed, equalTo(numDocs));
+        } else {
+            assumeThat("Number of indexed documents must be equal or grater than:" + numDocs, indexed, greaterThanOrEqualTo(numDocs));
+        }
         return this;
     }
 

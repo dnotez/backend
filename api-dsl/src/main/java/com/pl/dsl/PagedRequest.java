@@ -20,7 +20,7 @@ public class PagedRequest {
         this.query = query;
     }
 
-    public static PagedRequest suggestion(String query) {
+    public static PagedRequest create(String query) {
         return new PagedRequest(query);
     }
 

@@ -17,7 +17,9 @@ import ratpack.handling.Context;
 /**
  * @author mamad
  * @since 16/12/14.
+ * @deprecated Replaced with com.pl.web.user.note.NotesChainHandler
  */
+@Deprecated
 @Singleton
 public class ArticleCollectionHandler implements Action<Chain> {
     private final HandlerHelper handlerHelper;
