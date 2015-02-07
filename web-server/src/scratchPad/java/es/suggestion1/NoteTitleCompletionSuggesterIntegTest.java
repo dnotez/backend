@@ -1,9 +1,9 @@
 package es.suggestion1;
 
 
-import com.pl.dsl.note.SuggestionResponse;
-import com.pl.store.es.NoteTitleCompletionSuggester;
-import com.pl.store.es.IndexName;
+import com.dz.dsl.note.SuggestionResponse;
+import com.dz.store.es.IndexName;
+import com.dz.store.es.NoteTitleCompletionSuggester;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.junit.Test;

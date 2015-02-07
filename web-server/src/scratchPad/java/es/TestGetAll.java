@@ -1,8 +1,8 @@
 package es;
 
+import com.dz.store.es.EsClientBuilder;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.pl.store.es.EsClientBuilder;
 import org.elasticsearch.action.ActionListener;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.action.search.SearchType;
@@ -14,8 +14,8 @@ import java.io.IOException;
 import java.io.StringWriter;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import static com.pl.store.es.IndexName.MAIN;
-import static com.pl.store.es.IndexName.Type.NOTE;
+import static com.dz.store.es.IndexName.MAIN;
+import static com.dz.store.es.IndexName.Type.NOTE;
 import static org.junit.Assert.*;
 
 /**

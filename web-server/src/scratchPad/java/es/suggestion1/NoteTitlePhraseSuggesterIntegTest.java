@@ -1,6 +1,6 @@
 package es.suggestion1;
 
-import com.pl.store.es.NoteTitlePhraseSuggester;
+import com.dz.store.es.NoteTitlePhraseSuggester;
 import org.junit.Test;
 
 /**

@@ -1,7 +1,7 @@
 package es;
 
-import com.pl.EsTestHelper;
-import com.pl.store.es.NoteTitleCompletionSuggester;
+import com.dz.EsTestHelper;
+import com.dz.store.es.NoteTitleCompletionSuggester;
 
 /**
  * @author mamad

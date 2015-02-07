@@ -17,7 +17,7 @@ if (!JavaVersion.current().java8Compatible) {
 // See: http://gradle.org/docs/current/userguide/application_plugin.html
 apply plugin: "io.ratpack.ratpack-java"
 
-mainClassName = 'com.pl.server.BackendServer'
+mainClassName = 'com.dz.server.BackendServer'
 
 dependencies {
     testCompile 'junit:junit:4.11'

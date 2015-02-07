@@ -1,11 +1,11 @@
 package es.suggestion1;
 
+import com.dz.dsl.PagedRequest;
+import com.dz.dsl.note.SuggestionResponse;
+import com.dz.store.es.NoteCompletionSuggesterComposer;
+import com.dz.store.es.NoteSuggester;
 import com.google.common.collect.ImmutableList;
 import com.google.common.util.concurrent.Uninterruptibles;
-import com.pl.dsl.PagedRequest;
-import com.pl.dsl.note.SuggestionResponse;
-import com.pl.store.es.NoteCompletionSuggesterComposer;
-import com.pl.store.es.NoteSuggester;
 import org.elasticsearch.action.admin.indices.create.CreateIndexRequestBuilder;
 import org.elasticsearch.action.index.IndexRequestBuilder;
 import org.elasticsearch.common.xcontent.XContentBuilder;
@@ -20,10 +20,10 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import static com.pl.dsl.note.NoteFields.SUGGEST;
-import static com.pl.dsl.note.NoteFields.SUGGEST_PHRASE;
-import static com.pl.store.es.IndexName.MAIN;
-import static com.pl.store.es.IndexName.Type.NOTE;
+import static com.dz.dsl.note.NoteFields.SUGGEST;
+import static com.dz.dsl.note.NoteFields.SUGGEST_PHRASE;
+import static com.dz.store.es.IndexName.MAIN;
+import static com.dz.store.es.IndexName.Type.NOTE;
 import static org.elasticsearch.cluster.metadata.IndexMetaData.SETTING_NUMBER_OF_SHARDS;
 import static org.elasticsearch.common.settings.ImmutableSettings.settingsBuilder;
 import static org.elasticsearch.test.hamcrest.ElasticsearchAssertions.assertAcked;
