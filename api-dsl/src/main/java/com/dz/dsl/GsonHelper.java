@@ -30,7 +30,7 @@ public class GsonHelper {
     }
 
 
-    private class NoteResultTypeAdapter implements InstanceCreator<Result<Note>> {
+    private static class NoteResultTypeAdapter implements InstanceCreator<Result<Note>> {
         @Override
         public Result<Note> createInstance(Type type) {
             return new NoteResult(0, null);

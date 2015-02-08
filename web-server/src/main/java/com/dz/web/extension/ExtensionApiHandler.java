@@ -1,5 +1,6 @@
 package com.dz.web.extension;
 
+import com.dz.body.HtmlMainContentExtractor;
 import com.dz.dsl.IdResponse;
 import com.dz.dsl.PagedRequest;
 import com.dz.dsl.extension.GetByUrlRequest;
@@ -32,12 +33,15 @@ public class ExtensionApiHandler implements Action<Chain> {
 
     private final HandlerHelper handlerHelper;
     private final NoteBodyFetcher noteBodyFetcher;
+    private final HtmlMainContentExtractor mainContentExtractor;
     private final NoteStore noteStore;
 
     @Inject
-    public ExtensionApiHandler(HandlerHelper handlerHelper, NoteBodyFetcher noteBodyFetcher, NoteStore store) {
+    public ExtensionApiHandler(HandlerHelper handlerHelper, NoteBodyFetcher noteBodyFetcher,
+                               HtmlMainContentExtractor mainContentExtractor, NoteStore store) {
         this.handlerHelper = handlerHelper;
         this.noteBodyFetcher = noteBodyFetcher;
+        this.mainContentExtractor = mainContentExtractor;
         this.noteStore = store;
     }
 
@@ -62,14 +66,24 @@ public class ExtensionApiHandler implements Action<Chain> {
             @Override
             public void execute(Fulfiller<String> fulfiller) throws Exception {
                 Note note = handlerHelper.fromBody(context, Note.class);
+                //fetch full content
                 FetchResponse fetchResponse = noteBodyFetcher.fetchBody(note.getUrl());
                 if (!fetchResponse.isValid()) {
                     handlerHelper.jsonConsumer(fulfiller)
                             .accept(IdResponse.create(null).error("Could not fetch the note body."));
                     return;
                 }
+
+                //extract main content
+                Optional<String> optional = mainContentExtractor.extractMainContent(fetchResponse.getBody());
+                if (!optional.isPresent()) {
+                    handlerHelper.jsonConsumer(fulfiller)
+                            .accept(IdResponse.create(null).error("Page has no content."));
+                    return;
+                }
+
                 try {
-                    note.setBody(fetchResponse.getBody());
+                    note.setBody(optional.get());
                     IdResponse response = noteStore.save(note);
                     handlerHelper.jsonConsumer(fulfiller).accept(response);
                 } catch (StoreActionFailedException e) {
